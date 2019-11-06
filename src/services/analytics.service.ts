@@ -13,6 +13,6 @@ export class AnalyticsService {
       let values = snapshot.val()
       return values
     })
-    \
+    
   }
 }
