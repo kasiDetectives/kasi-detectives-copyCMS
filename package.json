@@ -66,6 +66,7 @@
     "@ng-bootstrap/ng-bootstrap": "4.2.1",
     "chart.js": "2.8.0",
     "core-js": "3.1.4",
+    "firebase": "^7.2.3",
     "ngx-toastr": "10.0.4",
     "rxjs": "6.5.2",
     "tslib": "1.10.0",

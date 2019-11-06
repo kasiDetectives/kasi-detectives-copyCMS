@@ -13,6 +13,18 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 
 import { AppRoutingModule } from "./app-routing.module";
 import { ComponentsModule } from "./components/components.module";
+import * as firebase from 'firebase';
+var firebaseConfig = {
+  apiKey: "AIzaSyAqj9dyDMnp_Yjb2JiSr899kubQBx3dzbI",
+  authDomain: "kasidetectives.firebaseapp.com",
+  databaseURL: "https://kasidetectives.firebaseio.com",
+  projectId: "kasidetectives",
+  storageBucket: "kasidetectives.appspot.com",
+  messagingSenderId: "207670776123",
+  appId: "1:207670776123:web:b1f7be1f7bb88f7d70271e"
+};
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
 
 @NgModule({
   imports: [
