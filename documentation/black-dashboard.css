@@ -14553,7 +14553,7 @@ table.tablesorter thead tr .headerSortDown {
   width: 290px;
   border-radius: 0.1875rem;
   padding: 0 10px;
-  background: linear-gradient(#222a42, #1d253b);
+  background: linear-gradient(hsl(225, 32%, 20%), #1d253b);
 }
 
 .fixed-plugin .dropdown .dropdown-menu .tim-icons {
