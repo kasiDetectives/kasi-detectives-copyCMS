@@ -1,4 +1,5 @@
 import { Component, OnInit } from "@angular/core";
+import { ReportsIncidenceService } from 'src/services/reports-incidence.service';
 
 declare const google: any;
 
@@ -14,7 +15,9 @@ draggable?: boolean;
   templateUrl: "map.component.html"
 })
 export class MapComponent implements OnInit {
-  constructor() {}
+  highRiskLocations = {}
+  reportedLocations = {}
+  constructor(public reportIncidenceService : ReportsIncidenceService) {}
 
   ngOnInit() {
 
@@ -220,5 +223,28 @@ export class MapComponent implements OnInit {
 
         // To add the marker to the map, call setMap();
         marker.setMap(map);
+  }
+
+  async loadLocations(){
+    let result :any
+    await this.reportIncidenceService.fetchSavedLocations().then(data =>{
+      result = data
+      this.highRiskLocations = data
+      console.log(this.highRiskLocations);
+      console.log(result.length);
+    })
+    console.log(result);
+    //this.LandMarks()
+    return  result 
+  }
+  async loadUserIncidents(){
+    let result :any
+    await this.reportIncidenceService.fetchUserIncidents().then(data => {
+      result = data
+      this.reportedLocations = data
+      console.log(result.length);
+    })
+    console.log(result);
+    return  result
   }
 }
