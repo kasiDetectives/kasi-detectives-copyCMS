@@ -17553,7 +17553,7 @@ Copyright (c) 2015 Daniel Eden
 
 .card-chart .table td {
   border-top: none;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid #fd9c00;
 }
 
 .card-chart .card-progress {

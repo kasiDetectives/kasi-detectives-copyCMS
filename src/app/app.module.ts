@@ -13,11 +13,7 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 
 import { AppRoutingModule } from "./app-routing.module";
 import { ComponentsModule } from "./components/components.module";
-import {MatCardModule} from '@angular/material/card';
-import {MatListModule} from '@angular/material/list';
-import {MatInputModule} from '@angular/material/input';
 import * as firebase from 'firebase';
-
 var firebaseConfig = {
   apiKey: "AIzaSyAqj9dyDMnp_Yjb2JiSr899kubQBx3dzbI",
   authDomain: "kasidetectives.firebaseapp.com",
@@ -39,9 +35,6 @@ firebase.initializeApp(firebaseConfig);
     NgbModule,
     RouterModule,
     AppRoutingModule,
-    MatCardModule,
-    MatListModule,
-    MatInputModule,
     ToastrModule.forRoot()
   ],
   declarations: [AppComponent, AdminLayoutComponent, AuthLayoutComponent],
