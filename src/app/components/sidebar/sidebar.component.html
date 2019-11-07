@@ -4,7 +4,7 @@
       <!-- <img src="./assets/img/angular2-logo-white.png" /> -->
     </div>
   </a>
-  <a  class="simple-text logo-normal">
+  <a  class="simple-text logo-normal" style="color:white; font-weight: bold">
     Kasi Detectives
   </a>
 </div>
@@ -16,9 +16,9 @@
       *ngFor="let menuItem of menuItems"
       class="{{ menuItem.class }} nav-item"
     >
-      <a [routerLink]="[menuItem.path]">
-        <i class="tim-icons  {{ menuItem.icon}}"></i>
-        <p>{{ menuItem.title }}</p>
+      <a  style="color:#fd9c00; font-size: 1.2rem" [routerLink]="[menuItem.path]">
+        <i style="color:white" class="tim-icons  {{ menuItem.icon}}"></i>
+        <p style="color:#fd9c00">{{ menuItem.title }} </p>
       </a>
     </li>
   </ul>

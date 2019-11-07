@@ -54,7 +54,7 @@ export class DashboardComponent implements OnInit {
       },
 
       tooltips: {
-        backgroundColor: '#f5f5f5',
+        backgroundColor: '#fd9c00',
         titleFontColor: '#333',
         bodyFontColor: '#666',
         bodySpacing: 4,
@@ -383,19 +383,19 @@ export class DashboardComponent implements OnInit {
     gradientStroke.addColorStop(0.4, 'rgba(66,134,121,0.0)'); //green colors
     gradientStroke.addColorStop(0, 'rgba(66,134,121,0)'); //green colors
 
-    var data = {
+    var datas = {
       labels: ['JUL', 'AUG', 'SEP', 'OCT', 'NOV'],
       datasets: [{
         label: "My First dataset",
         fill: true,
         backgroundColor: gradientStroke,
-        borderColor: '#00d6b4',
-        borderWidth: 2,
+        borderColor: '#fd9c00',
+        borderqaWidth: 2,
         borderDash: [],
         borderDashOffset: 0.0,
-        pointBackgroundColor: '#00d6b4',
+        pointBackgroundColor: '#fd9c00',
         pointBorderColor: 'rgba(255,255,255,0)',
-        pointHoverBackgroundColor: '#00d6b4',
+        pointHoverBackgroundColor: '#fd9c00',
         pointBorderWidth: 20,
         pointHoverRadius: 4,
         pointHoverBorderWidth: 15,
@@ -406,7 +406,7 @@ export class DashboardComponent implements OnInit {
 
     var myChart = new Chart(this.ctx, {
       type: 'line',
-      data: data,
+      data: datas,
       options: gradientChartOptionsConfigurationWithTooltipGreen
 
     });
