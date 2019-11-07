@@ -36,13 +36,13 @@ export const ROUTES: RouteInfo[] = [
   //   class: ""
   // },
 
-  {
-    path: "/user",
-    title: "User Profile",
-    rtlTitle: "",
-    icon: "icon-single-02",
-    class: ""
-  },
+  // {
+  //   path: "/user",
+  //   title: "User Profile",
+  //   rtlTitle: "",
+  //   icon: "icon-single-02",
+  //   class: ""
+  // },
   // {
   //   path: "/tables",
   //   title: "Table List",
