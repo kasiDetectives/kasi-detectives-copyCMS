@@ -15,7 +15,8 @@ export class DashboardComponent implements OnInit {
   public clicked: boolean = true;
   public clicked1: boolean = false;
   public clicked2: boolean = false;
-
+  userReportedArray = []
+  locationReportArray = []
 
   reason = '';
   array = []
@@ -40,6 +41,8 @@ export class DashboardComponent implements OnInit {
   
   constructor(public analyticsService : AnalyticsService) {
     this.fetchUserReports()
+    console.log(this.monthlyReport);
+    
   }
 
   ngOnInit() {
@@ -493,17 +496,68 @@ export class DashboardComponent implements OnInit {
     this.myChartData.update();
   }
   fetchUserReports(){
+    let addNewLocation
     this.analyticsService.getUserReports().then(data => {
       console.log(data);
       let userReports = data
 
-      for(let key in userReports){
-        
+      for(let place in userReports){
+        console.log(place);
+        for(let key in userReports[place]){
+          console.log(key);
+          this.userReportedArray.push({
+            place: place,
+            description: userReports[place][key]['description'],
+            month: userReports[place][key]['month'],
+            year: userReports[place][key]['year']
+          })
+        }
       }
+
+      for(let i = 0; i < this.userReportedArray.length; i++){
+
+        //iterating checking for matching months
+        for(let monthIndex = 0; monthIndex < this.monthlyReport.length; monthIndex++){
+          if(this.monthlyReport[monthIndex].month === this.userReportedArray[i].month){
+            console.log('yippie',this.monthlyReport[monthIndex].month);
+            this.monthlyReport[monthIndex].numberOfReports = this.monthlyReport[monthIndex].numberOfReports + 1
+          }
+        }
+        
+          if(this.locationReportArray.length === 0){
+            this.locationReportArray.push({
+              location: this.userReportedArray[i].place,
+              numberOfReports: 1
+            })
+          }else{
+            for(let locationIndex = 0; locationIndex < this.locationReportArray.length; locationIndex++){
+              if(this.locationReportArray[locationIndex].location === this.userReportedArray[i].place){
+                this.locationReportArray[locationIndex].numberOfReports = this.locationReportArray[locationIndex].numberOfReports + 1
+              }else{
+                addNewLocation = true
+              }
+          }
+          // if(this.monthlyReport[locationIndex].month === this.userReportedArray[i].month){
+          //   console.log('yippie',this.monthlyReport[locationIndex].month);
+          //   this.monthlyReport[locationIndex].numberOfReports = this.monthlyReport[locationIndex].numberOfReports + 1
+          //   }
+          
+          }
+          if(addNewLocation === true){
+            this.locationReportArray.push({
+              location: this.userReportedArray[i].place,
+              numberOfReports: 1
+            })
+          }
+      }
+     
+      console.log(this.userReportedArray);
+      console.log(this.monthlyReport);
+      console.log(this.locationReportArray);
       
     })
   }
-
+  
   
 
   // fetchUserReports(){
