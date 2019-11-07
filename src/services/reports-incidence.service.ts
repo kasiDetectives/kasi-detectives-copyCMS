@@ -15,6 +15,20 @@ export class ReportsIncidenceService {
   date
   year
   constructor() { }
+
+  fetchCrimeCategories(){
+    return firebase.database().ref().child('CrimeTypes').once('value').then(result =>{
+        let string =  (JSON.stringify(result));
+        let answer = JSON.parse(string)
+        for(let key in answer){this.crimesList.push(key)}
+        this.crimesList.push('Other')
+        return this.crimesList
+      }).catch(error =>{
+        console.log(error);
+        return error
+      })
+    }
+    
   fetchUserIncidents(){
     return new Promise((resolve, reject) => {
      firebase.database().ref().child('Incident').on('child_added', result=>{

@@ -17,7 +17,7 @@ export class DashboardComponent implements OnInit {
   public clicked2: boolean = false;
   userReportedArray = []
   locationReportArray = []
-
+  numberOfDiffCrimes = []
   reason = '';
   array = []
   numUserIncidents
@@ -41,6 +41,7 @@ export class DashboardComponent implements OnInit {
   
   constructor(public analyticsService : AnalyticsService) {
     this.fetchUserReports()
+    this.fetchCrimes()
     console.log(this.monthlyReport);
     
   }
@@ -494,6 +495,12 @@ export class DashboardComponent implements OnInit {
   public updateOptions() {
     this.myChartData.data.datasets[0].data = this.data;
     this.myChartData.update();
+  }
+  fetchCrimes(){
+    this.analyticsService.fetchCrimeCategories().then(result=> {
+      console.log(result);
+      
+    })
   }
   fetchUserReports(){
     let addNewLocation
