@@ -28,6 +28,9 @@ export class DashboardComponent implements OnInit {
   numPlaceIncidents = []
   currentYearReports = []
   monthlyReport = []
+  gradientChartOptionsConfigurationWithTooltipRed = {}
+  gradientChartOptionsConfigurationWithTooltipGreen = {}
+  gradientBarChartConfiguration = {}
   
   constructor(public analyticsService : AnalyticsService, public incidentsService : ReportsIncidenceService) {
     
@@ -139,7 +142,7 @@ export class DashboardComponent implements OnInit {
       }
     };
 
-    var gradientChartOptionsConfigurationWithTooltipRed: any = {
+    this.gradientChartOptionsConfigurationWithTooltipRed = {
       maintainAspectRatio: false,
       legend: {
         display: false
@@ -238,7 +241,7 @@ export class DashboardComponent implements OnInit {
       }
     };
 
-    var gradientChartOptionsConfigurationWithTooltipGreen: any = {
+    this.gradientChartOptionsConfigurationWithTooltipGreen = {
       maintainAspectRatio: false,
       legend: {
         display: false
@@ -289,7 +292,7 @@ export class DashboardComponent implements OnInit {
     };
 
 
-    var gradientBarChartConfiguration: any = {
+    this.gradientBarChartConfiguration = {
       maintainAspectRatio: false,
       legend: {
         display: false
@@ -313,10 +316,12 @@ export class DashboardComponent implements OnInit {
             drawBorder: false,
             color: 'rgba(29,140,248,0.1)',
             zeroLineColor: "transparent",
+            minimum: 5,
+            maximum: 20,
           },
           ticks: {
-            suggestedMin: 60,
-            suggestedMax: 120,
+            // suggestedMin: 60,
+            // suggestedMax: 120,
             padding: 20,
             fontColor: "#9e9e9e"
           }
@@ -337,50 +342,53 @@ export class DashboardComponent implements OnInit {
       }
     };
 
-    this.canvas = document.getElementById("chartLineRed");
-    this.ctx = this.canvas.getContext("2d");
+    // this.canvas = document.getElementById("chartLineRed");
+    // this.ctx = this.canvas.getContext("2d");
 
-    var gradientStroke = this.ctx.createLinearGradient(0, 230, 0, 50);
+    // var gradientStroke = this.ctx.createLinearGradient(0, 230, 0, 50);
 
-    gradientStroke.addColorStop(1, 'rgba(233,32,16,0.2)');
-    gradientStroke.addColorStop(0.4, 'rgba(233,32,16,0.0)');
-    gradientStroke.addColorStop(0, 'rgba(233,32,16,0)'); //red colors
-    var month_labels = []
-    // var month_dataset = []
-    console.log(this.monthlyReport);
+    // gradientStroke.addColorStop(1, 'rgba(233,32,16,0.2)');
+    // gradientStroke.addColorStop(0.4, 'rgba(233,32,16,0.0)');
+    // gradientStroke.addColorStop(0, 'rgba(233,32,16,0)'); //red colors
+    // var month_labels = []
+    // // var month_dataset = []
+    // console.log(this.monthlyReport);
     
-    for(let mi = 0; mi < this.monthlyReport.length; mi++){
-      month_labels.push(this.monthlyReport[mi].month)
-      this.month_dataset.push(this.monthlyReport[mi].numberOfReports)
-    }
-    console.log(this.month_dataset);
+    // for(let mi = 0; mi < this.monthlyReport.length; mi++){
+    //   month_labels.push(this.monthlyReport[mi].month)
+    //   this.month_dataset.push(this.monthlyReport[mi].numberOfReports)
+    //   console.log(this.monthlyReport[mi].numberOfReports);
+      
+    // }
+    // console.log(this.month_dataset);
     
-    var data = {
-      labels: month_labels,
-      datasets: [{
-        label: "Data",
-        fill: true,
-        backgroundColor: gradientStroke,
-        borderColor: '#ec250d',
-        borderWidth: 2,
-        borderDash: [],
-        borderDashOffset: 0.0,
-        pointBackgroundColor: '#ec250d',
-        pointBorderColor: 'rgba(255,255,255,0)',
-        pointHoverBackgroundColor: '#ec250d',
-        pointBorderWidth: 20,
-        pointHoverRadius: 4,
-        pointHoverBorderWidth: 15,
-        pointRadius: 4,
-        data: this.month_dataset,
-      }]
-    };
-
-    var myChart = new Chart(this.ctx, {
-      type: 'line',
-      data: data,
-      options: gradientChartOptionsConfigurationWithTooltipRed
-    });
+    // var data = {
+    //   labels: month_labels,
+    //   datasets: [{
+    //     label: "Data",
+    //     fill: true,
+    //     backgroundColor: gradientStroke,
+    //     borderColor: '#ec250d',
+    //     borderWidth: 2,
+    //     borderDash: [],
+    //     borderDashOffset: 0.0,
+    //     pointBackgroundColor: '#ec250d',
+    //     pointBorderColor: 'rgba(255,255,255,0)',
+    //     pointHoverBackgroundColor: '#ec250d',
+    //     pointBorderWidth: 20,
+    //     pointHoverRadius: 4,
+    //     pointHoverBorderWidth: 15,
+    //     pointRadius: 4,
+    //     data: this.month_dataset,
+    //   }]
+    // };
+    // console.log(data.labels);
+    
+    // var myChart = new Chart(this.ctx, {
+    //   type: 'line',
+    //   data: data,
+    //   options: gradientChartOptionsConfigurationWithTooltipRed
+    // });
 
 
     this.canvas = document.getElementById("chartLineGreen");
@@ -417,98 +425,15 @@ export class DashboardComponent implements OnInit {
     var myChart = new Chart(this.ctx, {
       type: 'line',
       data: datas,
-      options: gradientChartOptionsConfigurationWithTooltipGreen
+      options: this.gradientChartOptionsConfigurationWithTooltipGreen
 
     });
 
-    //new chart
-    var chart_labels = []
-   // var chart_labels = ['tembisa  ', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
-   for(let li = 0; li < this.numberOfReportsPerLocation.length; li ++){
-    chart_labels.push(this.numberOfReportsPerLocation[li].place)
-    this.datasets.push(this.numberOfReportsPerLocation[li].numberOfReports)
-   }
-    //var chart_labels = this.numberOfReportsPerLocation[0];
-    // this.datasets = [
-    //   [100, 70, 90, 70, 85, 60, 75, 60, 90, 80, 110, 100],
-    //   [80, 120, 105, 110, 95, 105, 90, 100, 80, 95, 70, 120],
-    //   [60, 80, 65, 130, 80, 105, 90, 130, 70, 115, 60, 130]
-    // ];
-    this.data = this.datasets;
-   console.log(this.data);
-   console.log(this.datasets);
-   
-   
-
-
-    this.canvas = document.getElementById("chartBig1");
-    this.ctx = this.canvas.getContext("2d");
-
-    var gradientStroke = this.ctx.createLinearGradient(0, 230, 0, 50);
-
-    gradientStroke.addColorStop(1, 'rgba(233,32,16,0.2)');
-    gradientStroke.addColorStop(0.4, 'rgba(233,32,16,0.0)');
-    gradientStroke.addColorStop(0, 'rgba(233,32,16,0)'); //red colors
-
-    var config = {
-      type: 'line',
-      data: {
-        labels: chart_labels,
-        datasets: [{
-          label: "My First dataset",
-          fill: true,
-          backgroundColor: gradientStroke,
-          borderColor: '#ec250d',
-          borderWidth: 2,
-          borderDash: [],
-          borderDashOffset: 0.0,
-          pointBackgroundColor: '#ec250d',
-          pointBorderColor: 'rgba(255,255,255,0)',
-          pointHoverBackgroundColor: '#ec250d',
-          pointBorderWidth: 20,
-          pointHoverRadius: 4,
-          pointHoverBorderWidth: 15,
-          pointRadius: 4,
-          data: this.data,
-        }]
-      },
-      options: gradientChartOptionsConfigurationWithTooltipRed
-    };
-    this.myChartData = new Chart(this.ctx, config);
+    
 
     ///new chart
 
-    this.canvas = document.getElementById("CountryChart");
-    this.ctx  = this.canvas.getContext("2d");
-    var gradientStroke = this.ctx.createLinearGradient(0, 230, 0, 50);
-
-    gradientStroke.addColorStop(1, 'rgba(29,140,248,0.2)');
-    gradientStroke.addColorStop(0.4, 'rgba(29,140,248,0.0)');
-    gradientStroke.addColorStop(0, 'rgba(29,140,248,0)'); //blue colors
-
-
-    var myChart = new Chart(this.ctx, {
-      type: 'bar',
-      responsive: true,
-      legend: {
-        display: false
-      },
-      data: {
-        labels: ['USA', 'GER', 'AUS', 'UK', 'RO', 'BR'],
-        datasets: [{
-          label: "Countries",
-          fill: true,
-          backgroundColor: gradientStroke,
-          hoverBackgroundColor: gradientStroke,
-          borderColor: '#1f8ef1',
-          borderWidth: 2,
-          borderDash: [],
-          borderDashOffset: 0.0,
-          data: [53, 20, 10, 80, 100, 45],
-        }]
-      },
-      options: gradientBarChartConfiguration
-    });
+    
 
   }
   public updateOptions() {
@@ -597,10 +522,166 @@ export class DashboardComponent implements OnInit {
       console.log(this.numberOfReportsPerLocation);
       console.log(this.numberOfDiffCrimes);
       
-      this.ngOnInit()
+      this.loadMonthlyReportGraph()
+      this.loadLocationReportGraph()
+      this.loadCrimeTypeGraph()
     })
   }
-  
+  loadCrimeTypeGraph(){
+    this.canvas = document.getElementById("CountryChart");
+    this.ctx  = this.canvas.getContext("2d");
+    var gradientStroke = this.ctx.createLinearGradient(0, 230, 0, 50);
+
+    gradientStroke.addColorStop(1, 'rgba(29,140,248,0.2)');
+    gradientStroke.addColorStop(0.4, 'rgba(29,140,248,0.0)');
+    gradientStroke.addColorStop(0, 'rgba(29,140,248,0)'); //blue colors
+    let crime_labels = []
+    let crime_data = []
+    console.log(this.numberOfDiffCrimes);
+    
+    for(let cgi = 0; cgi < this.numberOfDiffCrimes.length; cgi++){
+      console.log(this.numberOfDiffCrimes[cgi].typeOfCrime);
+      
+      crime_labels.push(this.numberOfDiffCrimes[cgi].typeOfCrime)
+      crime_data.push(this.numberOfDiffCrimes[cgi].numberOfReports)
+    }
+    console.log(crime_labels);
+    console.log(crime_data);
+    
+    var myChart = new Chart(this.ctx, {
+      type: 'bar',
+      responsive: true,
+      legend: {
+        display: false
+      },
+      data: {
+        labels: crime_labels,
+        datasets: [{
+          label: "Countries",
+          fill: true,
+          backgroundColor: gradientStroke,
+          hoverBackgroundColor: gradientStroke,
+          borderColor: '#1f8ef1',
+          borderWidth: 2,
+          borderDash: [],
+          borderDashOffset: 0.0,
+          data: crime_data,
+        }]
+      },
+      options: this.gradientBarChartConfiguration
+    });
+  }
+
+  loadLocationReportGraph(){
+    //new chart
+    var chart_labels = []
+   // var chart_labels = ['tembisa  ', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+   for(let li = 0; li < this.numberOfReportsPerLocation.length; li ++){
+    chart_labels.push(this.numberOfReportsPerLocation[li].place)
+    this.datasets.push(this.numberOfReportsPerLocation[li].numberOfReports)
+   }
+    //var chart_labels = this.numberOfReportsPerLocation[0];
+    // this.datasets = [
+    //   [100, 70, 90, 70, 85, 60, 75, 60, 90, 80, 110, 100],
+    //   [80, 120, 105, 110, 95, 105, 90, 100, 80, 95, 70, 120],
+    //   [60, 80, 65, 130, 80, 105, 90, 130, 70, 115, 60, 130]
+    // ];
+    this.data = this.datasets;
+   console.log(this.data);
+   console.log(this.datasets);
+   
+   
+
+
+    this.canvas = document.getElementById("chartBig1");
+    this.ctx = this.canvas.getContext("2d");
+
+    var gradientStroke = this.ctx.createLinearGradient(0, 230, 0, 50);
+
+    gradientStroke.addColorStop(1, 'rgba(233,32,16,0.2)');
+    gradientStroke.addColorStop(0.4, 'rgba(233,32,16,0.0)');
+    gradientStroke.addColorStop(0, 'rgba(233,32,16,0)'); //red colors
+
+    var config = {
+      type: 'line',
+      data: {
+        labels: chart_labels,
+        datasets: [{
+          label: "My First dataset",
+          fill: true,
+          backgroundColor: gradientStroke,
+          borderColor: '#ec250d',
+          borderWidth: 2,
+          borderDash: [],
+          borderDashOffset: 0.0,
+          pointBackgroundColor: '#ec250d',
+          pointBorderColor: 'rgba(255,255,255,0)',
+          pointHoverBackgroundColor: '#ec250d',
+          pointBorderWidth: 20,
+          pointHoverRadius: 4,
+          pointHoverBorderWidth: 15,
+          pointRadius: 4,
+          data: this.data,
+        }]
+      },
+      options: this.gradientChartOptionsConfigurationWithTooltipRed
+    };
+    this.myChartData = new Chart(this.ctx, config);
+  }
+  loadMonthlyReportGraph(){
+    //monthly reports graph
+    this.canvas = document.getElementById("chartLineRed");
+    this.ctx = this.canvas.getContext("2d");
+
+    var gradientStroke = this.ctx.createLinearGradient(0, 230, 0, 50);
+
+    gradientStroke.addColorStop(1, 'rgba(233,32,16,0.2)');
+    gradientStroke.addColorStop(0.4, 'rgba(233,32,16,0.0)');
+    gradientStroke.addColorStop(0, 'rgba(233,32,16,0)'); //red colors
+    var month_labels = []
+    // var month_dataset = []
+    console.log(this.monthlyReport);
+    
+    for(let mi = 0; mi < this.monthlyReport.length; mi++){
+      month_labels.push(this.monthlyReport[mi].month)
+      this.month_dataset.push(this.monthlyReport[mi].numberOfReports)
+      console.log(this.monthlyReport[mi].numberOfReports);
+      
+    }
+    console.log(this.month_dataset);
+    
+    var data = {
+      labels: month_labels,
+      datasets: [{
+        label: "Data",
+        fill: true,
+        backgroundColor: gradientStroke,
+        borderColor: '#ec250d',
+        borderWidth: 2,
+        borderDash: [],
+        borderDashOffset: 0.0,
+        pointBackgroundColor: '#ec250d',
+        pointBorderColor: 'rgba(255,255,255,0)',
+        pointHoverBackgroundColor: '#ec250d',
+        pointBorderWidth: 20,
+        pointHoverRadius: 4,
+        pointHoverBorderWidth: 15,
+        pointRadius: 4,
+        data: this.month_dataset,
+      }]
+    };
+    console.log(data.labels);
+    
+    var myChart = new Chart(this.ctx, {
+      type: 'line',
+      data: data,
+      options: this.gradientChartOptionsConfigurationWithTooltipRed
+    });
+
+
+    //location report graph
+    
+  }
   
 
   // fetchUserReports(){
