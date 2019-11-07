@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, NgZone } from "@angular/core";
 import { ReportsIncidenceService } from 'src/services/reports-incidence.service';
 
 declare const google: any;
@@ -17,226 +17,310 @@ draggable?: boolean;
 export class MapComponent implements OnInit {
   highRiskLocations = {}
   reportedLocations = {}
-  constructor(public reportIncidenceService : ReportsIncidenceService) {}
 
-  ngOnInit() {
+  selectedMode
+  lat
+  lng
+  hide = true
+  start
+  end 
+  destinations
+  dangerPlek
+  infoWindow
+  map
+  myDest
 
-        var myLatlng = new google.maps.LatLng(40.748817, -73.985428);
-        var mapOptions = {
-            zoom: 13,
-            center: myLatlng,
-            scrollwheel: false, //we disable de scroll over the map, it is a really annoing when you scroll through page
-            styles: [{
-                "elementType": "geometry",
-                "stylers": [{
-                  "color": "#1d2c4d"
-                }]
-              },
-              {
-                "elementType": "labels.text.fill",
-                "stylers": [{
-                  "color": "#8ec3b9"
-                }]
-              },
-              {
-                "elementType": "labels.text.stroke",
-                "stylers": [{
-                  "color": "#1a3646"
-                }]
-              },
-              {
-                "featureType": "administrative.country",
-                "elementType": "geometry.stroke",
-                "stylers": [{
-                  "color": "#4b6878"
-                }]
-              },
-              {
-                "featureType": "administrative.land_parcel",
-                "elementType": "labels.text.fill",
-                "stylers": [{
-                  "color": "#64779e"
-                }]
-              },
-              {
-                "featureType": "administrative.province",
-                "elementType": "geometry.stroke",
-                "stylers": [{
-                  "color": "#4b6878"
-                }]
-              },
-              {
-                "featureType": "landscape.man_made",
-                "elementType": "geometry.stroke",
-                "stylers": [{
-                  "color": "#334e87"
-                }]
-              },
-              {
-                "featureType": "landscape.natural",
-                "elementType": "geometry",
-                "stylers": [{
-                  "color": "#023e58"
-                }]
-              },
-              {
-                "featureType": "poi",
-                "elementType": "geometry",
-                "stylers": [{
-                  "color": "#283d6a"
-                }]
-              },
-              {
-                "featureType": "poi",
-                "elementType": "labels.text.fill",
-                "stylers": [{
-                  "color": "#6f9ba5"
-                }]
-              },
-              {
-                "featureType": "poi",
-                "elementType": "labels.text.stroke",
-                "stylers": [{
-                  "color": "#1d2c4d"
-                }]
-              },
-              {
-                "featureType": "poi.park",
-                "elementType": "geometry.fill",
-                "stylers": [{
-                  "color": "#023e58"
-                }]
-              },
-              {
-                "featureType": "poi.park",
-                "elementType": "labels.text.fill",
-                "stylers": [{
-                  "color": "#3C7680"
-                }]
-              },
-              {
-                "featureType": "road",
-                "elementType": "geometry",
-                "stylers": [{
-                  "color": "#304a7d"
-                }]
-              },
-              {
-                "featureType": "road",
-                "elementType": "labels.text.fill",
-                "stylers": [{
-                  "color": "#98a5be"
-                }]
-              },
-              {
-                "featureType": "road",
-                "elementType": "labels.text.stroke",
-                "stylers": [{
-                  "color": "#1d2c4d"
-                }]
-              },
-              {
-                "featureType": "road.highway",
-                "elementType": "geometry",
-                "stylers": [{
-                  "color": "#2c6675"
-                }]
-              },
-              {
-                "featureType": "road.highway",
-                "elementType": "geometry.fill",
-                "stylers": [{
-                  "color": "#9d2a80"
-                }]
-              },
-              {
-                "featureType": "road.highway",
-                "elementType": "geometry.stroke",
-                "stylers": [{
-                  "color": "#9d2a80"
-                }]
-              },
-              {
-                "featureType": "road.highway",
-                "elementType": "labels.text.fill",
-                "stylers": [{
-                  "color": "#b0d5ce"
-                }]
-              },
-              {
-                "featureType": "road.highway",
-                "elementType": "labels.text.stroke",
-                "stylers": [{
-                  "color": "#023e58"
-                }]
-              },
-              {
-                "featureType": "transit",
-                "elementType": "labels.text.fill",
-                "stylers": [{
-                  "color": "#98a5be"
-                }]
-              },
-              {
-                "featureType": "transit",
-                "elementType": "labels.text.stroke",
-                "stylers": [{
-                  "color": "#1d2c4d"
-                }]
-              },
-              {
-                "featureType": "transit.line",
-                "elementType": "geometry.fill",
-                "stylers": [{
-                  "color": "#283d6a"
-                }]
-              },
-              {
-                "featureType": "transit.station",
-                "elementType": "geometry",
-                "stylers": [{
-                  "color": "#3a4762"
-                }]
-              },
-              {
-                "featureType": "water",
-                "elementType": "geometry",
-                "stylers": [{
-                  "color": "#0e1626"
-                }]
-              },
-              {
-                "featureType": "water",
-                "elementType": "labels.text.fill",
-                "stylers": [{
-                  "color": "#4e6d70"
-                }]
-              }
-            ]
-        };
-        var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+  Lats = [] 
+  Long = []
 
-        var marker = new google.maps.Marker({
-            position: myLatlng,
-            title: "Hello World!"
-        });
+  keyboardShow = false
+  MarkersArray = []
+  //////////////////////////////////////////////
+  address:string;
+  DBLocation=[]
+  scheduled=[];
+  mySelected
+  pic = '\assets\icon\magnifying-glass (10).png'
+  //user : Array<any> = []
+  user = {}
+  userId
+  result = []
+  loc =[]
+  email = null
+  lats
+  long
+  message
+  selectImage
+  mapz : any;
+  markers : any = [];
+  autocomplete: any;
+  autocompletez: any;
+  GoogleAutocomplete: any;
+  GooglePlaces: any;
+  geocoder: any
+  autocompleteItems: any;
+  autocompleteItemz: any;
 
-        // To add the marker to the map, call setMap();
-        marker.setMap(map);
+  dangerImage
+  
+  backButton
+
+  directionsService
+  array = []
+
+  showDirection = false
+  showMe = true
+
+  constructor(public reportIncidenceService : ReportsIncidenceService,public zone: NgZone) {
+
   }
 
+
+  
+
+  handleLocationError(browserHasGeolocation, infoWindow, pos){
+    infoWindow.setPosition(pos);
+    infoWindow.setContent(browserHasGeolocation ? 'Error: The Geolocation service failed.' : 'Error: Your browser doesn\'t support geolocation.');
+    infoWindow.open(this.map);
+  }
+
+  ngOnInit(){
+    this.myMaps();
+  }
+
+
+  myMaps(){
+    var infoWindowMarker;
+    var selectedMarker
+    var  infoWindow
+    ///danger image
+    this.dangerImage = {
+      url: 'assets/danger (2).png', // This marker is 20 pixels wide by 32 pixels high.
+      //  url: 'assets/icon/pin-black-silhouette-in-diagonal-position-pointing-down-right (8).png',
+      size: new google.maps.Size(32, 32), // The origin for this image is (0, 0).
+      origin: new google.maps.Point(0, 0), // The anchor for this image is the base of the flagpole at (0, 32).
+      // anchor: new google.maps.Point(0, 40)
+    };
+    this.selectImage = {
+      url: 'assets/icon/pin-black-silhouette-in-diagonal-position-pointing-down-right (2).png', // This marker is 20 pixels wide by 32 pixels high.
+      size: new google.maps.Size(32, 32), // The origin for this image is (0, 0).
+      origin: new google.maps.Point(0, 0), // The anchor for this image is the base of the flagpole at (0, 32).
+      // anchor: new google.maps.Point(0, 40)
+    };
+    ///my location image
+    var myLocationimage = {
+      url: 'assets/placeholder.png', // This marker is 20 pixels wide by 32 pixels high.
+      size: new google.maps.Size(32, 32), // The origin for this image is (0, 0).
+      origin: new google.maps.Point(0, 0), // The anchor for this image is the base of the flagpole at (0, 32).
+      // anchor: new google.maps.Point(0, 40)
+    };
+
+
+
+    console.log('initialising map');
+    ///// set it to zero for sea
+    var center = new google.maps.LatLng(0, 0);
+    var myOptions = {
+      zoom: 18,
+     // disableDefaultUI: true,
+     zoomControl: true,
+     zoomControlOptions: {
+         position: google.maps.ControlPosition.RIGHT_CENTER
+     },
+     scaleControl: true,
+     streetViewControl: false,
+     streetViewControlOptions: {
+         position: google.maps.ControlPosition.BOTTOM_CENTER
+     },
+      fullscreenControl: false,
+      // fullscreenControlOptions: {
+      //   position: google.maps.ControlPosition.RIGHT_CENTER
+      // },
+      mapTypeId: google.maps.MapTypeId.ROADMAP,
+      mapTypeControl: false,
+      // mapTypeControlOptions: {
+      //   style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+      //   position: google.maps.ControlPosition.LEFT_BOTTOM
+      // },
+      center: center
+    }
+    var map = new google.maps.Map(document.getElementById('map'), myOptions);
+
+    infoWindow = new google.maps.InfoWindow;
+    infoWindowMarker= new google.maps.InfoWindow;
+    // /// map click listener start
+    map.addListener('dblclick',(event) => {
+      //     //delete marker
+     // this.deleteMarkers()
+      //  //delete marker end
+      //this.addMarker(event.latLng);
+      var markers = new google.maps.Marker({
+        position: event.latLng,
+        map: map,
+        // icon: selectImage,
+        draggable: true
+      });
+      markers.push(markers);
+      selectedMarker = markers
+      console.log(selectedMarker,"first selected marker")
+      console.log(event.latLng,"location of new marker")
+      ////// listener on marker start
+      // Report incident
+      markers.addListener('click', (event) => {
+        
+        
+       // this.reportIncident(event, markers)
+      });
+      //// listener on marker end
+    });
+    // Get the location of you
+    if(navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        let latitude = position.coords.latitude
+        let longitude = position.coords.longitude
+        
+        var pos=[]
+        pos.push({
+          location: new google.maps.LatLng(latitude, longitude)
+        });
+
+        this.array.push(pos[0])
+        this.Lats = this.array[0].location.lat();
+        this.Long = this.array[0].location.lng();
+
+        var locations = {lat: this.Lats, lng: this.Long}
+        this.start = locations
+        
+        console.log(locations, "wereAreHere");
+        
+        let marker = new google.maps.Marker({
+          position: pos[0].location,
+          zoom: 17,
+          map: map,
+          //animation: GoogleMapsAnimation.BOUNCE,
+         // icon: myLocationimage, //icon: selectImage
+        });
+        this.markers.push(marker);
+        map.setCenter(pos[0].location);
+
+        // this.geocoder.geocode({'location': new google.maps.LatLng(position.coords.latitude, position.coords.longitude)}, (results, status) => {
+        //   console.log(results);
+        //   if(status === "OK") {
+        //   //let address= results[0].address_components[1].long_name + ',' + results[0].address_components[2].long_name + ',' + results[0].address_components[3].long_name
+        //     let addressArray = {
+        //       street: results[0].address_components[1].long_name,
+        //       section: results[0].address_components[2].long_name,
+        //       surburb: results[0].address_components[3].long_name
+        //     }
+
+        //    infoWindow.setContent(addressArray['street'])
+        //    infoWindow.setPosition(pos[0].location);
+        //    infoWindow.open(map)
+        //   }
+        // })
+
+        infoWindow.open(map);
+        map.setCenter(pos[0].location);
+        this.array.push(pos[0])
+        this.Lats = this.array[0].location.lat();
+        this.Long = this.array[0].location.lng();
+
+ /////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////// calling all Dangermarkers
+
+return new Promise((resolve, reject) => {
+  this.loadLocations().then(data => { 
+    console.log(data);
+    
+    for( let x = 0; x < data.length; x++ ){
+      this.DBLocation.push({
+        crimeType: data[x].crimeType,
+        location:new google.maps.LatLng(data[x].lat,data[x].lng)
+      })
+
+
+
+      console.log(this.DBLocation,"xxx");
+      this.infoWindow = new google.maps.InfoWindow;
+      /////marking them
+      let markers = new google.maps.Marker({
+        map: map,
+        draggable: false,
+        position: new google.maps.LatLng(data[x].lat, data[x].lng),
+        icon: this.dangerImage,
+      });
+
+      //resolve(this.DBLocation)
+      resolve(markers)
+      
+    }
+  })
+})
+
+////////////////////////////// end here
+
+      }, () => {
+        this.handleLocationError(true, infoWindow, map.getCenter());
+      });
+    } else {
+      // Browser doesn't support Geolocation
+      this.handleLocationError(false, infoWindow, map.getCenter());
+    }
+  }
+
+
+
+    //////  getting different places
+    updateSearchResults(){
+      console.log(this.autocomplete.input);
+      if(this.autocomplete.input === '') {
+        this.autocompleteItems = [];
+        return;
+      }
+      this.GoogleAutocomplete.getPlacePredictions({ input: this.autocomplete.input },
+      (predictions, status) => {
+        this.autocompleteItems = [];
+        this.zone.run(() => {
+          predictions.forEach((prediction) => {
+            this.autocompleteItems.push(prediction);
+          });
+        });
+      });
+    }
+
+      /////////////  places
+  SearchPlaces(){
+    if(this.myDest === '') {
+      this.autocompleteItemz = [];
+      return;
+    }
+    this.GoogleAutocomplete.getPlacePredictions({ input: this.myDest },
+    (predictions, status) => {
+      this.autocompleteItemz = [];
+      this.zone.run(() => {
+        predictions.forEach((prediction) => {
+          this.autocompleteItemz.push(prediction);
+        });
+      });
+    });
+  }
+
+
+  ///// test outside construc
   async loadLocations(){
+    console.log("i'm first in hERE XXX ");
     let result :any
-    await this.reportIncidenceService.fetchSavedLocations().then(data =>{
+    await  this.reportIncidenceService.fetchSavedLocations().then(data =>{
       result = data
       this.highRiskLocations = data
       console.log(this.highRiskLocations);
       console.log(result.length);
     })
-    console.log(result);
-    //this.LandMarks()
+    console.log(result, "XXX");
     return  result 
   }
+
+
   async loadUserIncidents(){
     let result :any
     await this.reportIncidenceService.fetchUserIncidents().then(data => {
