@@ -31,7 +31,7 @@ export class DashboardComponent implements OnInit {
   gradientChartOptionsConfigurationWithTooltipRed = {}
   gradientChartOptionsConfigurationWithTooltipGreen = {}
   gradientBarChartConfiguration = {}
-  
+  users = []
   constructor(public analyticsService : AnalyticsService, public incidentsService : ReportsIncidenceService) {
     
     this.fetchCrimes()
@@ -42,7 +42,7 @@ export class DashboardComponent implements OnInit {
       
     // })
     console.log(this.monthlyReport);
-   
+   this.getUsers()
   }
 
   ngOnInit() {
@@ -451,6 +451,18 @@ export class DashboardComponent implements OnInit {
         })
       }
       console.log(this.numberOfDiffCrimes);
+      
+    })
+  }
+  getUsers(){
+    this.analyticsService.getUsers().then(result => {
+      console.log(result);
+      let data = result
+      
+      for(let uid in data){
+        this.users.push(Object(data[uid]))
+      }
+      console.log(this.users);
       
     })
   }

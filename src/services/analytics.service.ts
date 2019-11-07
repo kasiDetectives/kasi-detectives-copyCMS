@@ -27,4 +27,11 @@ export class AnalyticsService {
     })
     
   }
+  getUsers(){
+    return firebase.database().ref().child('Users').once('value').then((snapshot) => {
+      console.log(snapshot.val());
+      let values = snapshot.val()
+      return values
+    })
+  }
 }
