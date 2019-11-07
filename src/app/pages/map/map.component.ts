@@ -121,7 +121,7 @@ export class MapComponent implements OnInit {
     ///// set it to zero for sea
     var center = new google.maps.LatLng(0, 0);
     var myOptions = {
-      zoom: 18,
+      zoom: 25,
      // disableDefaultUI: true,
      zoomControl: true,
      zoomControlOptions: {
@@ -227,7 +227,7 @@ export class MapComponent implements OnInit {
 
  /////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////// calling all Dangermarkers
-
+​
 return new Promise((resolve, reject) => {
   this.loadLocations().then(data => { 
     console.log(data);
@@ -237,9 +237,9 @@ return new Promise((resolve, reject) => {
         crimeType: data[x].crimeType,
         location:new google.maps.LatLng(data[x].lat,data[x].lng)
       })
-
-
-
+​
+​
+​
       console.log(this.DBLocation,"xxx");
       this.infoWindow = new google.maps.InfoWindow;
       /////marking them
@@ -249,6 +249,18 @@ return new Promise((resolve, reject) => {
         position: new google.maps.LatLng(data[x].lat, data[x].lng),
         icon: this.dangerImage,
       });
+​
+      // Add circle overlay and bind to marker
+     var circle = new google.maps.Circle({
+     map: map,
+     radius:  155, //1609.34,    // 10 miles in metres
+     fillColor: 'red', //'#AA00',
+     strokeColor: 'red',
+     strokeWeight:0,
+     strokeWidth: 0,
+     stroke: 0
+});
+circle.bindTo('center', markers, 'position');
 
       //resolve(this.DBLocation)
       resolve(markers)
