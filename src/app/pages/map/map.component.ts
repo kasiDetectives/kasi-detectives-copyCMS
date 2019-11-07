@@ -52,7 +52,7 @@ export class MapComponent implements OnInit {
   message
   selectImage
   mapz : any;
-  markers : any;
+  markers : any = [];
   autocomplete: any;
   autocompletez: any;
   GoogleAutocomplete: any;
@@ -72,17 +72,7 @@ export class MapComponent implements OnInit {
   showMe = true
 
   constructor(public reportIncidenceService : ReportsIncidenceService,public zone: NgZone) {
-   
-   ///// it shows inside constructor
 
-  // this.reportIncidenceService.fetchSavedLocations().then(data =>{
-  // console.log(data, "datatata"); 
-  // this.highRiskLocations = data
-  // console.log(this.highRiskLocations, "luk-Here");
-  // })
-
-  //this.loadLocations()
-  //this.UseMarked()
   }
 
 
@@ -212,21 +202,22 @@ export class MapComponent implements OnInit {
         });
         this.markers.push(marker);
         map.setCenter(pos[0].location);
-        this.geocoder.geocode({'location': new google.maps.LatLng(position.coords.latitude, position.coords.longitude)}, (results, status) => {
-          console.log(results);
-          if(status === "OK") {
-          //let address= results[0].address_components[1].long_name + ',' + results[0].address_components[2].long_name + ',' + results[0].address_components[3].long_name
-            let addressArray = {
-              street: results[0].address_components[1].long_name,
-              section: results[0].address_components[2].long_name,
-              surburb: results[0].address_components[3].long_name
-            }
 
-           infoWindow.setContent(addressArray['street'])
-           infoWindow.setPosition(pos[0].location);
-           infoWindow.open(map)
-          }
-        })
+        // this.geocoder.geocode({'location': new google.maps.LatLng(position.coords.latitude, position.coords.longitude)}, (results, status) => {
+        //   console.log(results);
+        //   if(status === "OK") {
+        //   //let address= results[0].address_components[1].long_name + ',' + results[0].address_components[2].long_name + ',' + results[0].address_components[3].long_name
+        //     let addressArray = {
+        //       street: results[0].address_components[1].long_name,
+        //       section: results[0].address_components[2].long_name,
+        //       surburb: results[0].address_components[3].long_name
+        //     }
+
+        //    infoWindow.setContent(addressArray['street'])
+        //    infoWindow.setPosition(pos[0].location);
+        //    infoWindow.open(map)
+        //   }
+        // })
 
         infoWindow.open(map);
         map.setCenter(pos[0].location);
@@ -236,11 +227,10 @@ export class MapComponent implements OnInit {
 
  /////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////// calling all Dangermarkers
+
 return new Promise((resolve, reject) => {
   this.loadLocations().then(data => { 
-
-    console.log(data, "qqqq");
-    
+    console.log(data);
     
     for( let x = 0; x < data.length; x++ ){
       this.DBLocation.push({
@@ -248,15 +238,21 @@ return new Promise((resolve, reject) => {
         location:new google.maps.LatLng(data[x].lat,data[x].lng)
       })
 
+
+
       console.log(this.DBLocation,"xxx");
-      infoWindow = new google.maps.InfoWindow;
+      this.infoWindow = new google.maps.InfoWindow;
       /////marking them
-      this.markers = new google.maps.Marker({
+      let markers = new google.maps.Marker({
         map: map,
         draggable: false,
         position: new google.maps.LatLng(data[x].lat, data[x].lng),
-       // icon: this.dangerImage,
+        icon: this.dangerImage,
       });
+
+      //resolve(this.DBLocation)
+      resolve(markers)
+      
     }
   })
 })
@@ -309,36 +305,10 @@ return new Promise((resolve, reject) => {
     });
   }
 
-  ///////// Use Location
-
-  UseMarked(){
-    //  return new Promise((resolve, reject) => {
-    //   this.loadLocations().then(data => { 
-        
-    //     for( let x = 0; x < data.length; x++ ){
-    //       this.DBLocation.push({
-    //         crimeType: data[x].crimeType,
-    //         location:new google.maps.LatLng(data[x].lat,data[x].lng)
-    //       })
-
-    //       console.log(this.DBLocation,"xxx");
-    //       this.infoWindow = new google.maps.InfoWindow;
-    //       /////marking them
-    //       this.markers = new google.maps.Marker({
-    //         map: this.map,
-    //         draggable: false,
-    //         position: new google.maps.LatLng(data[x].lat, data[x].lng),
-    //        // icon: this.dangerImage,
-    //       });
-    //     }
-    //   })
-    // })
-  }
-
 
   ///// test outside construc
   async loadLocations(){
-    console.log("loadingLocations");
+    console.log("i'm first in hERE XXX ");
     let result :any
     await  this.reportIncidenceService.fetchSavedLocations().then(data =>{
       result = data
@@ -349,6 +319,7 @@ return new Promise((resolve, reject) => {
     console.log(result, "XXX");
     return  result 
   }
+
 
   async loadUserIncidents(){
     let result :any
