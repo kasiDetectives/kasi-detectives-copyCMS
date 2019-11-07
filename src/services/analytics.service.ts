@@ -13,7 +13,7 @@ export class AnalyticsService {
         console.log(crimeTypes);
         
         
-        return this.crimesList
+        return crimeTypes
       }).catch(error =>{
         console.log(error);
         return error
