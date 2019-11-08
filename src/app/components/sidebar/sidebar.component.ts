@@ -12,7 +12,7 @@ export const ROUTES: RouteInfo[] = [
     path: "/dashboard",
     title: "Dashboard",
     rtlTitle: "",
-    icon: "icon-chart-pie-36",
+    icon: "icon-chart-bar-32",
     class: ""
   },
   // {
